@@ -76,11 +76,11 @@
   </p>
 
   <h2>Formulaire de contact</h2>
-  <form   action="https://formsubmit.co/akotayaojerome@gmail.com" method="POST" class="formulaire-contact" id="form-contact">
-    <div class="champ"><label for="c-nom">Nom complet</label><input id="c-nom" required></div>
-    <div class="champ"><label for="c-email">E-mail</label><input id="c-email" type="email" required></div>
+  <form action="https://formsubmit.co/akotayaojerome@gmail.com" method="POST" class="formulaire-contact" id="form-contact">
+    <div class="champ"><label for="c-nom">Nom complet</label><input type="text" id="c-nom" name="name" required></div>
+    <div class="champ"><label for="c-email">E-mail</label><input type="email" id="c-email" name="email" required></div>
     <div class="champ"><label for="c-sujet">Sujet</label>
-      <select id="c-sujet">
+      <select id="c-sujet" name="subject">
         <option>Question sur un produit</option>
         <option>Suivi de commande</option>
         <option>Retour / échange</option>
@@ -88,11 +88,11 @@
       </select>
     </div>
     <div class="champ"><label for="c-message">Message</label>
-      <textarea id="c-message" required rows="5" style="width:100%; padding:12px 14px; border:1px solid var(--ligne); border-radius:var(--radius); font-family:inherit; font-size:0.95rem;"></textarea>
+      <textarea id="c-message" name="message" required rows="5" style="width:100%; padding:12px 14px; border:1px solid var(--ligne); border-radius:var(--radius); font-family:inherit; font-size:0.95rem;"></textarea>
     </div>
     <button type="submit" class="bouton bouton-primaire">Envoyer le message</button>
     <p id="confirmation-contact" style="display:none; margin-top:16px; color:var(--vert); font-size:0.9rem; font-weight:500;">Merci, votre message a bien été enregistré.</p>
-  </form>
+</form>
 </div>
 
 <footer class="pied">
