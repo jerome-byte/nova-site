@@ -23,7 +23,7 @@
   }
 
   /* Thème initial : choix enregistré → préférence système → mode jour */
-  appliquerTheme(lireThemeSauvegarde() || (prefereSombre() ? "sombre" : "jour"));
+  appliquerTheme(lireThemeSauvegarde() || "jour");
 
   /* Marqueur : apparitions au scroll et squelettes d'images actifs uniquement avec JS.
      Sans JavaScript, tout le contenu reste visible normalement. */
