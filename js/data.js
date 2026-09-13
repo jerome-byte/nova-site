@@ -1,0 +1,243 @@
+/* NOVA — catalogue produits (mode & tech)
+   Modifiez ce tableau pour changer les produits du site.
+   Chaque produit possède :
+   - couleur  : la couleur d'accent (prix, catégorie)
+   - couleurFond : la teinte de fond de secours (si pas d'image)
+   - image    : URL d'une photo libre de droits (Unsplash, Pexels, etc.)
+                 Laissez vide ("") pour utiliser l'icône vectorielle à la place.
+*/
+
+const PRODUITS = [
+  {
+    id: "tshirt-coton-bio",
+    nom: "T-shirt coton bio Essentials",
+    categorie: "Vêtements",
+    prix: 3000,
+    stock: 60,
+    accroche: "Coton bio 180g, coupe régulière, 5 coloris disponibles.",
+    description: "Le basique qui ne faillit jamais. Cousu dans un coton biologique 180g, ce t-shirt offre une tenue nette après nettoyage et un toucher doux toute la journée. La coupe régulière convient aussi bien au port seul qu'à une superposition sous une veste ou un pull.",
+    caracteristiques: ["100% coton biologique certifié GOTS", "Grammage 180 g/m²", "Coupe régulière unisexe", "Sérigraphie à l'eau sans solvant"],
+    icone: "tshirt",
+    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80&auto=format&fit=crop",
+    couleur: "#4F46E5",
+    couleurFond: "#EEF2FF"
+  },
+  {
+    id: "pull-maille-urban",
+    nom: "Pull maille Urban",
+    categorie: "Vêtements",
+    prix: 3500,
+    stock: 35,
+    accroche: "Maille polaire recyclée, coupe oversize, doublure douce.",
+    description: "Un pull pensé pour les soirées fraîches en ville comme en pleine nature. La maille polaire recyclée apporte chaleur et légèreté, la coupe oversize laisse une liberté de mouvement totale, et les finitions côtelées résistent à l'usure saison après saison.",
+    caracteristiques: ["Maille polaire 280g recyclée", "Coupe oversize unisexe", "Col rond et poignets côtelés", "Fabriqué au Portugal"],
+    icone: "pull",
+    image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80&auto=format&fit=crop",
+    couleur: "#FF6F61",
+    couleurFond: "#FFF1EE"
+  },
+  {
+    id: "short-urban-cargos",
+    nom: "Short Urban cargos",
+    categorie: "Vêtements",
+    prix: 4000,
+    stock: 45,
+    accroche: "Coton twill, 2 poches cargo, ceinture élastiquée.",
+    description: "Pensé pour la mobilité quotidienne, ce short cargos en coton twill résiste aux frottements du quotidien. La ceinture élastiquée avec cordon de réglage assure un maintien confortable, tandis que les poches latérales profondes libèrent les mains en extérieur.",
+    caracteristiques: ["Coton twill 245g", "Ceinture élastique avec cordon", "2 poches cargo latérales", "Longueur 18 cm au-dessus du genou"],
+    icone: "short",
+    image: "https://images.unsplash.com/photo-1523381294911-8d3cead13475?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dmV0ZW1lbnR8ZW58MHx8MHx8fDA%3D",
+    couleur: "#F59E0B",
+    couleurFond: "#FEF3C7"
+  },
+  {
+    id: "baskets1-urban-runner",
+    nom: "Baskets Urban runner",
+    categorie: "Chaussures",
+    prix: 7000,
+    stock: 25,
+    accroche: "Semelle EVA amortie, tige mesh respirante, 280g.",
+    description: "Une baskets pensée pour la marche urbaine comme pour les déplacements quotidiens. La semelle EVA amortit chaque foulée, la tige en mesh recyclé laisse respirer le pied, et le laçage rapide rend les sessions sportives aussi fluides que les trajets en ville.",
+    caracteristiques: ["Semelle EVA amortie 4 cm", "Tige en mesh recyclé", "Poids 280g (taille 42)", "Doublure antimicrobienne"],
+    icone: "baskets",
+    image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=80&auto=format&fit=crop",
+    couleur: "#10B981",
+    couleurFond: "#D1FAE5"
+  },
+  {
+    id: "baskets2-urban-runner",
+    nom: "Original",
+    categorie: "Chaussures",
+    prix: 5500,
+    stock: 25,
+    accroche: "Semelle EVA amortie, tige mesh respirante, 280g.",
+    description: "Une baskets pensée pour la marche urbaine comme pour les déplacements quotidiens. La semelle EVA amortit chaque foulée, la tige en mesh recyclé laisse respirer le pied, et le laçage rapide rend les sessions sportives aussi fluides que les trajets en ville.",
+    caracteristiques: ["Semelle EVA amortie 4 cm", "Tige en mesh recyclé", "Poids 280g (taille 42)", "Doublure antimicrobienne"],
+    icone: "baskets",
+    image: "https://images.pexels.com/photos/16947117/pexels-photo-16947117.jpeg",
+    couleur: "#10B981",
+    couleurFond: "#D1FAE5"
+  },
+  {
+    id: "baskets3-urban-runner",
+    nom: "The blue",
+    categorie: "Chaussures",
+    prix: 4000,
+    stock: 25,
+    accroche: "Semelle EVA amortie, tige mesh respirante, 280g.",
+    description: "Une baskets pensée pour la marche urbaine comme pour les déplacements quotidiens. La semelle EVA amortit chaque foulée, la tige en mesh recyclé laisse respirer le pied, et le laçage rapide rend les sessions sportives aussi fluides que les trajets en ville.",
+    caracteristiques: ["Semelle EVA amortie 4 cm", "Tige en mesh recyclé", "Poids 280g (taille 42)", "Doublure antimicrobienne"],
+    icone: "baskets",
+    image: "https://images.pexels.com/photos/13449652/pexels-photo-13449652.jpeg",
+    couleur: "#10B981",
+    couleurFond: "#D1FAE5"
+  },
+  {
+    id: "baskets4-urban-runner",
+    nom: "Noire",
+    categorie: "Chaussures",
+    prix: 6000,
+    stock: 25,
+    accroche: "Semelle EVA amortie, tige mesh respirante, 280g.",
+    description: "Une baskets pensée pour la marche urbaine comme pour les déplacements quotidiens. La semelle EVA amortit chaque foulée, la tige en mesh recyclé laisse respirer le pied, et le laçage rapide rend les sessions sportives aussi fluides que les trajets en ville.",
+    caracteristiques: ["Semelle EVA amortie 4 cm", "Tige en mesh recyclé", "Poids 280g (taille 42)", "Doublure antimicrobienne"],
+    icone: "baskets",
+    image: "https://images.pexels.com/photos/9666619/pexels-photo-9666619.jpeg",
+    couleur: "#10B981",
+    couleurFond: "#D1FAE5"
+  },
+  {
+    id: "lunettes-soleil-nova",
+    nom: "Lunettes de soleil ",
+    categorie: "Accessoires",
+    prix: 1000,
+    stock: 30,
+    accroche: "Verres polarisés UV400, monture polycarbonate, étui inclus.",
+    description: "Des lunettes pensées pour la ville et la route. Les verres polarisés éliminent les reflets, la monture en polycarbonate léger résiste aux chocs, et le design intemporel se porte aussi bien sur un t-shirt qu'une chemise. L'étui rigide et le chiffon microfibre accompagnent partout.",
+    caracteristiques: ["Verres polarisés UV400", "Monture polycarbonate 22g", "Filtre catégorie 3", "Étui rigide et chiffon inclus"],
+    icone: "lunettes",
+    image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=600&q=80&auto=format&fit=crop",
+    couleur: "#0EA5E9",
+    couleurFond: "#E0F2FE"
+  },
+  {
+    id: "smartphone-nova-x5",
+    nom: "Smartphone X5",
+    categorie: "Tech",
+    prix: 50000,
+    stock: 18,
+    accroche: "Écran 6.5\" AMOLED, triple caméra 50MP, batterie 5000mAh.",
+    description: "Un smartphone équilibré qui combine écran AMOLED 6.5 pouces, caméra triple 50MP avec stabilisation, et batterie 5000mAh rechargeable en une heure. Le processeur octa-core gère le multitâche et les jeux sans accroc, et le système photo dédié aux basses lumières rattrape les soirées.",
+    caracteristiques: ["Écran AMOLED 6.5\" 90Hz", "Triple caméra 50+12+5 MP", "Batterie 5000mAh charge rapide 33W", "128 Go stockage + 8 Go RAM"],
+    icone: "smartphone",
+    image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&q=80&auto=format&fit=crop",
+    couleur: "#8B5CF6",
+    couleurFond: "#EDE9FE"
+  },
+  {
+    id: "moniteur ",
+    nom: "Ecran moniteur",
+    categorie: "Tech",
+    prix: 90000,
+    stock: 18,
+    accroche: "Écran 6.5\" AMOLED, triple caméra 50MP, batterie 5000mAh.",
+    description: "Un smartphone équilibré qui combine écran AMOLED 6.5 pouces, caméra triple 50MP avec stabilisation, et batterie 5000mAh rechargeable en une heure. Le processeur octa-core gère le multitâche et les jeux sans accroc, et le système photo dédié aux basses lumières rattrape les soirées.",
+    caracteristiques: ["Écran AMOLED 6.5\" 90Hz", "Triple caméra 50+12+5 MP", "Batterie 5000mAh charge rapide 33W", "128 Go stockage + 8 Go RAM"],
+    icone: "Ecran",
+    image: "https://images.pexels.com/photos/7745560/pexels-photo-7745560.jpeg",
+    couleur: "#8B5CF6",
+    couleurFond: "#EDE9FE"
+  },
+  {
+    id: "latop",
+    nom: "Latop",
+    categorie: "Tech",
+    prix: 50000,
+    stock: 18,
+    accroche: "Écran 6.5\" AMOLED, triple caméra 50MP, batterie 5000mAh.",
+    description: "Un smartphone équilibré qui combine écran AMOLED 6.5 pouces, caméra triple 50MP avec stabilisation, et batterie 5000mAh rechargeable en une heure. Le processeur octa-core gère le multitâche et les jeux sans accroc, et le système photo dédié aux basses lumières rattrape les soirées.",
+    caracteristiques: ["Écran AMOLED 6.5\" 90Hz", "Triple caméra 50+12+5 MP", "Batterie 5000mAh charge rapide 33W", "128 Go stockage + 8 Go RAM"],
+    icone: "smartphone",
+    image: "https://images.pexels.com/photos/6592698/pexels-photo-6592698.jpeg",
+    couleur: "#8B5CF6",
+    couleurFond: "#EDE9FE"
+  },
+  {
+    id: "casquette-snapback-nova",
+    nom: "Casquette snapback",
+    categorie: "Accessoires",
+    prix: 500,
+    stock: 50,
+    accroche: "Coton brushé, visière plate réglable, broderie 3D.",
+    description: "Une casquette au style streetwear assumé, en coton brushé doux au toucher. La visière plane conserve sa forme, le système de réglage snapback s'ajuste à toutes les tailles, et la broderie 3D NOVA arbore discrètement la marque sans tomber dans le logo envahissant.",
+    caracteristiques: ["Coton brushé 6 panels", "Visière plate structurée", "Réglage snapback plastique", "Broderie 3D logo NOVA"],
+    icone: "casquette",
+    image: "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&q=80&auto=format&fit=crop",
+    couleur: "#EC4899",
+    couleurFond: "#FCE7F3"
+  },
+  {
+    id: "casque",
+    nom: "Casque Ecouteure",
+    categorie: "Accessoires",
+    prix: 500,
+    stock: 50,
+    accroche: "Coton brushé, visière plate réglable, broderie 3D.",
+    description: "Une casquette au style streetwear assumé, en coton brushé doux au toucher. La visière plane conserve sa forme, le système de réglage snapback s'ajuste à toutes les tailles, et la broderie 3D NOVA arbore discrètement la marque sans tomber dans le logo envahissant.",
+    caracteristiques: ["Coton brushé 6 panels", "Visière plate structurée", "Réglage snapback plastique", "Broderie 3D logo NOVA"],
+    icone: "casquette",
+    image: "https://images.pexels.com/photos/30428610/pexels-photo-30428610.jpeg",
+    couleur: "#EC4899",
+    couleurFond: "#FCE7F3"
+  },
+  {
+    id: "veste-jean-classic",
+    nom: "Veste en jean Classic",
+    categorie: "Vêtements",
+    prix: 2000,
+    stock: 22,
+    accroche: "Denim 12oz, coupe trucker, 4 poches, boutons pression.",
+    description: "La veste en jean qui traverse les saisons. Le denim 12oz se patine avec le temps, la coupe trucker structure la silhouette, et les boutons pression métalliques facilitent la fermeture. Un basique masculin et féminin qui se porte aussi bien ouvert sur un t-shirt que fermé en mi-saison.",
+    caracteristiques: ["Denim 12oz 100% coton", "Coupe trucker 4 poches", "Boutons pression métal vieilli", "Doublure partie supérieure"],
+    icone: "veste-jean",
+    image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80&auto=format&fit=crop",
+    couleur: "#4338CA",
+    couleurFond: "#E0E7FF"
+  },
+  {
+    id: "montre-connectee-nova",
+    nom: "Montre connectée Watch",
+    categorie: "Tech",
+    prix: 4000,
+    stock: 15,
+    accroche: "Écran AMOLED 1.43\", GPS, autonomie 14 jours, 100+ sports.",
+    description: "Une montre pensée pour le sportif comme pour le citadin. L'écran AMOLED 1.43 pouces reste lisible en plein soleil, le GPS intégré trace vos parcours sans smartphone, et l'autonomie de 14 jours en usage standard évite les recharges quotidiennes. Les 100+ modes sport couvrent running, natation, vélo et yoga.",
+    caracteristiques: ["Écran AMOLED 1.43\" 466×466", "GPS double bande intégré", "Autonomie 14 jours / 50h GPS", "100+ modes sport, étanche 5 ATM"],
+    icone: "montre",
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80&auto=format&fit=crop",
+    couleur: "#7C3AED",
+    couleurFond: "#F3E8FF"
+  },
+  {
+    id: "sac-dos-urban-25l",
+    nom: "Sac à dos Urban 25L",
+    categorie: "Accessoires",
+    prix: 7000,
+    stock: 28,
+    accroche: "Polyester imperméable, compartiment 15\", dos ventilé.",
+    description: "Le sac à dos du quotidien, pensé pour le travail comme pour les courts séjours. Le polyester imperméable protège vos affaires, le compartiment ordinateur 15 pouces est doublé, et le dos en mesh ventilé réduit la transpiration sur les longs trajets. Une poche anti-vol cachée accueille passeport et portefeuille.",
+    caracteristiques: ["Polyester 600D imperméable", "Compartiment ordinateur 15\"", "Dos et bretelles ventilés", "Capacité 25L — 1.2 kg à vide"],
+    icone: "sac-dos",
+    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80&auto=format&fit=crop",
+    couleur: "#F97316",
+    couleurFond: "#FFEDD5"
+  }
+];
+
+function formatPrix(valeur) {
+  return valeur.toLocaleString("fr-FR").replace(/\u202F|,/g, " ") + " FCFA";
+}
+
+function getProduitParId(id) {
+  return PRODUITS.find(function (p) { return p.id === id; });
+}
