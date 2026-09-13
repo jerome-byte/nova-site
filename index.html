@@ -196,11 +196,12 @@
         <h2>Restez dans la boucle</h2>
         <p>Nouveautés, ventes flash et conseils style &amp; tech&nbsp;: une lettre courte, une fois par mois. Zéro spam, désinscription en un clic.</p>
       </div>
-      <form action="https://formsubmit.co/datacodejerome@gmail.com" method="POST" class="newsletter-form" id="formulaire-newsletter" novalidate >
-        <input type="email" name="email" placeholder="votre@email.com" aria-label="Votre adresse e-mail" autocomplete="email" required>
-        <button type="submit" class="bouton bouton-blanc">Je m'abonne</button>
-        <p class="newsletter-note">Rejoignez notre communauté et recevez nos nouveautés en avant-première.</p>
-      </form>
+      <form name="newsletter" method="POST" data-netlify="true" class="newsletter-form" id="formulaire-newsletter">
+    <input type="hidden" name="form-name" value="newsletter">
+    <input type="email" name="email" placeholder="votre@email.com" aria-label="Votre adresse e-mail" autocomplete="email" required>
+    <button type="submit" class="bouton bouton-blanc">Je m'abonne</button>
+    <p class="newsletter-note">Rejoignez notre communauté et recevez nos nouveautés en avant-première.</p>
+</form>
     </div>
   </div>
 </section>
