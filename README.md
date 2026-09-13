@@ -17,28 +17,37 @@ Site vitrine + panier + tunnel de commande, en HTML/CSS/JavaScript pur (aucune i
 
 - Avec VS Code : installez l'extension "Live Server", clic droit sur `index.html` → "Open with Live Server".
 
+> ℹ Les fonctions PWA (bannière d'installation, mode hors-ligne) et le bouton Partager natif nécessitent `http://localhost` ou HTTPS — elles restent silencieuses si le site est ouvert directement en `file://`.
+
 ## Structure du projet
 
 ```
 site/
 ├── index.html            → Page d'accueil + catalogue (recherche, tri, vu récemment)
-├── produit.html           → Fiche produit détaillée (?id=...) + variantes, galerie, avis
-├── panier.html             → Panier (quantités, variantes, sous-total, livraison)
-├── paiement.html            → Tunnel de commande (livraison + mode de paiement)
-├── confirmation.html         → Page de confirmation après commande
-├── favoris.html               → Page "Mes favoris" (wishlist, localStorage)
-├── mentions-legales.html      → Mentions légales (modèle à compléter)
-├── cgv.html                    → Conditions générales de vente (modèle)
-├── confidentialite.html         → Politique de confidentialité (modèle)
-├── contact.html                  → Formulaire de contact
-├── css/style.css                  → Toute la mise en forme (palette NOVA + thème sombre)
+├── produit.html          → Fiche produit détaillée (?id=...) : variantes, galerie, avis, partage
+├── panier.html           → Panier (quantités, variantes, sous-total, livraison)
+├── paiement.html         → Tunnel de commande (livraison + mode de paiement)
+├── confirmation.html     → Page de confirmation après commande
+├── favoris.html          → Page "Mes favoris" (wishlist, localStorage)
+├── mentions-legales.html → Mentions légales (modèle à compléter)
+├── cgv.html              → Conditions générales de vente (modèle)
+├── confidentialite.html  → Politique de confidentialité (modèle)
+├── contact.html          → Formulaire de contact
+├── manifest.json         → v6 : manifeste PWA (nom, icônes, mode application, couleurs)
+├── sw.js                 → v6 : Service Worker (cache hors-ligne, 27 fichiers pré-cachés)
+├── favicon.svg           → v5 : icône d'onglet vectorielle (dégradé NOVA + N blanc)
+├── favicon-32.png        → v5 : favicon PNG 32×32 (secours navigateurs anciens)
+├── apple-touch-icon.png  → v5 : icône écran d'accueil iOS (180×180)
+├── og-image.png          → v5 : image de partage réseaux sociaux (1200×630)
+├── icons/                → v6 : icônes PWA — icon-192/512.png + variantes maskable
+├── css/style.css         → Toute la mise en forme (palette NOVA + thème sombre)
 └── js/
     ├── data.js       → Catalogue produits + variantes, dateAjout, popularité
     ├── icones.js     → Illustrations vectorielles des produits (mode & tech)
     ├── panier.js     → Logique du panier (localStorage, clé nova_panier) + stocks variantes
     ├── boutique.js   → v2 : toasts, favoris, badge stock, cartes, vu récemment, recherche
     ├── theme.js      → v3 : mode sombre / clair (localStorage, appliqué avant le rendu)
-    ├── effets.js     → v3 : apparitions au scroll + squelettes de chargement d'images
+    ├── effets.js     → v3 : apparitions au scroll + squelettes ; v6 : Service Worker + bannière d'installation
     ├── avis.js       → v3 : avis clients (étoiles + commentaires, localStorage)
     ├── galerie.js    → v3 : galerie multi-images de la fiche produit
     ├── promotions.js → v4 : bannière promo + compte à rebours, nouveautés, témoignages, newsletter
@@ -66,7 +75,7 @@ site/
 
 ## Fonctionnalités v3 (2026)
 
-1. **Animations au scroll** — les cartes produit et les titres de section apparaissent en fondu avec un léger glissement quand ils entrent dans l'écran (IntersectionObserver + MutationObserver : les cartes re-rendues par la recherche ou le tri s'animent aussi, sans toucher à leur code). Les éléments déjà à l'écran au chargement restent statiques, et `prefers-reduced-motion` désigne tout.
+1. **Animations au scroll** — les cartes produit et les titres de section apparaissent en fondu avec un léger glissement quand ils entrent dans l'écran (IntersectionObserver + MutationObserver : les cartes re-rendues par la recherche ou le tri s'animent aussi, sans toucher à leur code). Les éléments déjà à l'écran au chargement restent statiques, et `prefers-reduced-motion` respecte les réglages d'accessibilité.
 2. **Skeleton loading** — pendant le chargement d'une photo produit, le visuel affiche un reflet balayant (shimmer) sur le fond pastel du produit ; l'image fond ensuite en douceur. Si une image est cassée, le fond pastel reste affiché proprement.
 3. **Avis clients** — notes en étoiles + commentaires sur chaque fiche produit (`produit.html`) : note globale, répartition par étoile, formulaire avec sélection d'étoiles cliquables, publication instantanée en `localStorage` (clé `nova_avis`). Des avis de démonstration sont semés au premier chargement ; la note moyenne apparaît aussi sur les cartes du catalogue.
 4. **Mode sombre** — bouton lune/soleil dans la nav de toutes les pages et dans le drawer mobile. Le choix est mémorisé (`nova_theme`), la préférence système est respectée à la première visite, et le thème est appliqué avant le premier rendu (aucun flash blanc). Toute la palette s'inverse via les variables CSS.
@@ -77,7 +86,30 @@ site/
 1. **Bannière promo avec compte à rebours** — en haut de l'accueil : "−20% jusqu'à vendredi !" avec code `NOVA20` et décompte en temps réel (jours / heures / min / sec) jusqu'au vendredi 23h59m59s (ce soir si nous sommes vendredi). Calculé à l'ouverture, aucune donnée stockée. Blocs `js/promotions.js` + `.banniere-promo` dans `style.css`.
 2. **Section "Nouveautés"** — sous le bandeau de confiance : les 3 produits dont `dateAjout` est le plus récent (actuellement Ecran moniteur, Casque, Baskets Noire). Un badge dégradé **"Nouveau"** est posé sur ces 3 cartes partout où elles apparaissent (accueil, catalogue, favoris, produits associés) — la liste `IDS_NOUVEAUTES` est recalculée automatiquement dans `boutique.js` quand vous mettez à jour `dateAjout` dans `data.js`.
 3. **Témoignages clients** — section "Ils nous font confiance" : les 3 meilleurs avis (note ≥ 4, commentaire consistant) tirés de `nova_avis`, avec étoiles, citation, initiales du client et lien vers le produit concerné. Sélection déterministe (note puis date décroissantes) ; la section se masque d'elle-même s'il n'existe aucun avis éligible.
-4. **Newsletter** — bloc dégradé en bas de l'accueil : saisie d'e-mail avec validation, anti-doublon et confirmation visuelle. L'inscription est mémorisée dans `localStorage` (clé `nova_newsletter`) pour la démonstration — rien n'est envoyé en ligne ; branchez ici votre outil d'newsletter (Mailchimp, Brevo…) pour un usage réel.
+4. **Newsletter** — bloc dégradé en bas de l'accueil : saisie d'e-mail avec validation, anti-doublon et confirmation visuelle. L'inscription est mémorisée dans `localStorage` (clé `nova_newsletter`) pour la démonstration — rien n'est envoyé en ligne ; branchez ici votre outil de newsletter (Mailchimp, Brevo…) pour un usage réel.
+
+## Fonctionnalités v5 (2026 — favicon & Open Graph)
+
+1. **Favicon aux couleurs de la marque** — icône d'onglet déclinée du dégradé signature (N blanc sur dégradé NOVA) : `favicon.svg` (navigateurs modernes), `favicon-32.png` (secours) et `apple-touch-icon.png` (favori / écran d'accueil iOS). Déclarées dans le `<head>` des 10 pages.
+2. **Open Graph & Twitter Cards** — balises complètes sur les 10 pages : un lien NOVA partagé sur WhatsApp, Facebook ou X affiche désormais un aperçu avec l'image `og-image.png` (1200×630, déclinée de la charte), le titre et la description de la page.
+   - ⚠ Les balises `og:url`, `og:image` et `twitter:image` utilisent le domaine provisoire `https://www.votre-domaine.tg` : remplacez-le par votre vrai domaine après mise en ligne — les aperçus ne fonctionnent qu'avec des URL absolues accessibles en ligne.
+   - Après publication, forcez la mise à jour des aperçus avec le Sharing Debugger de Facebook (developers.facebook.com/tools/debug) et repartagez le lien dans WhatsApp.
+
+## Fonctionnalités v6 (2026 — PWA & partage)
+
+1. **PWA basique — site installable comme une application**
+   - `manifest.json` : nom NOVA, icônes 192/512 (dont variantes *maskable* pour les launchers Android), lancement plein écran (`standalone`), couleurs de thème NOVA.
+   - `sw.js` (Service Worker) : 27 fichiers du cœur du site pré-cachés → navigation hors-ligne et rechargements instantanés ; les ressources locales visitées sont ajoutées au fil de l'eau ; hors connexion, une page inconnue retombe sur l'accueil.
+   - Mise à jour du site : renommez `nova-cache-v1` en `nova-cache-v2` dans `sw.js` (les anciens caches sont purgés automatiquement).
+   - Méta PWA dans le `<head>` des 10 pages : `theme-color` indigo, `manifest`, réglages écran d'accueil iOS.
+   - ⚠ Le Service Worker exige un contexte sécurisé : `https://` (ou `localhost` en local).
+2. **Bannière d'installation maison (v6.1)** — Chrome retarde ou supprime sa bannière native (signaux d'engagement, refus antérieur = blocage ~90 jours, jamais sur iOS). La bannière NOVA s'affiche donc dès l'ouverture sur toutes les pages :
+   - Android / desktop : icône NOVA + bouton **« Installer »** qui déclenche le dialogue natif (via `beforeinstallprompt`), toast de confirmation si accepté.
+   - iPhone : instructions directes « Partager → Sur l'écran d'accueil » (Apple ne permet pas d'installer programmatiquement).
+   - Fermeture (×) = pause de 7 jours (clé `nova_installation_refusee`), réinitialisée après une installation réussie ; jamais affichée si le site tourne déjà en mode application.
+3. **Bouton Partager (fiche produit)** — bouton « Partager » sous les actions du produit (`.lien-partage`) :
+   - Mobile : ouvre la feuille de partage native (Web Share API) — WhatsApp, Messages, etc. — avec le nom, le prix et le lien du produit (`?id=…` conservé).
+   - Desktop / navigateur sans API : copie le lien dans le presse-papiers + toast de confirmation.
 
 ## Catalogue produits
 
@@ -100,6 +132,8 @@ Ce site est un livrable fonctionnel prêt pour la démonstration locale, mais qu
 4. **Gestion des stocks et commandes** — Actuellement, les commandes ne sont pas transmises à un système de gestion : il n'y a pas de base de données. Pour un usage réel, il faudra un minimum de backend pour recevoir, stocker et notifier les commandes (e-mail, tableau de gestion, etc.).
 5. **Photos produits** — Les produits utilisent des illustrations vectorielles génériques. Remplacez-les par de vraies photos de vos produits (voir `js/data.js` et `js/icones.js`).
 6. **Nom de domaine e-mail** — Les adresses `@nova.tg` et le numéro de téléphone sont des exemples à remplacer par vos vraies coordonnées.
+7. **Domaine dans les balises de partage** — Remplacez `www.votre-domaine.tg` par votre vrai domaine dans les balises Open Graph/Twitter des 10 pages (recherchez `votre-domaine` dans les fichiers HTML).
+8. **HTTPS obligatoire** — Indispensable pour la PWA (installation, mode hors-ligne) et le partage natif. Les hébergeurs statiques (Netlify, Vercel, OVH…) l'activent gratuitement.
 
 ## Personnaliser le catalogue
 
