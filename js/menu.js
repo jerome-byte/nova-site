@@ -1,5 +1,6 @@
 /* NOVA — Menu mobile (toggle + drawer)
-   Gère l'ouverture/fermeture du panneau coulissant sur mobile. */
+   Gère l'ouverture/fermeture du panneau coulissant sur mobile.
+   v2 : le drawer embarque aussi la barre de recherche et le lien Favoris. */
 
 document.addEventListener("DOMContentLoaded", function () {
   // Injecter le markup du drawer si non présent (évite de répéter dans chaque HTML)
@@ -23,7 +24,13 @@ document.addEventListener("DOMContentLoaded", function () {
           <span></span><span></span><span></span>
         </button>
       </div>
+      <form class="recherche-form recherche-drawer" role="search" action="index.html" method="get">
+        <input type="search" class="recherche-input" name="q" placeholder="Rechercher un produit…" aria-label="Rechercher un produit" autocomplete="off">
+      </form>
       <nav class="nav-liens">${liensHTML}</nav>
+      <a href="favoris.html" class="lien-panier">
+        Favoris <span class="badge-panier badge-favoris" data-badge-favoris style="display:none;">0</span>
+      </a>
       <a href="panier.html" class="lien-panier">
         Panier <span class="badge-panier" data-badge-panier style="display:none;">0</span>
       </a>`;

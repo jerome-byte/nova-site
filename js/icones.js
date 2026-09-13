@@ -1,6 +1,8 @@
 /* Illustrations vectorielles NOVA pour chaque catégorie de produit (mode & tech).
    Un seul jeu de lignes, cohérent avec la nouvelle identité visuelle du site.
-   Si une URL d'image est fournie (3ème argument), elle est utilisée à la place du SVG. */
+   Si une URL d'image est fournie (3ème argument), elle est utilisée à la place du SVG.
+
+   v2 : ajout des icônes "ecran", "casque" et "laptop" (produits tech ajoutés au catalogue). */
 
 function iconeSVG(nom, couleur, image) {
   // Si une image est fournie, on l'utilise à la place de l'icône vectorielle.
@@ -94,6 +96,29 @@ function iconeSVG(nom, couleur, image) {
       <path d="M62 58 L72 42" stroke="${c}" stroke-width="2" opacity="0.5"/>
       <path d="M138 58 L128 42" stroke="${c}" stroke-width="2" opacity="0.5"/>
       <circle cx="100" cy="150" r="4" fill="${c}"/>
+    </svg>`,
+    ecran: `<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="28" y="42" width="144" height="94" rx="8" stroke="${c}" stroke-width="3"/>
+      <rect x="40" y="54" width="120" height="70" rx="3" stroke="${c}" stroke-width="2" opacity="0.4"/>
+      <path d="M84 136 L84 154 M116 136 L116 154" stroke="${c}" stroke-width="3" stroke-linecap="round"/>
+      <line x1="64" y1="158" x2="136" y2="158" stroke="${c}" stroke-width="3" stroke-linecap="round"/>
+      <path d="M58 92 L74 76 M92 108 L124 68" stroke="${c}" stroke-width="2" opacity="0.55" stroke-linecap="round"/>
+    </svg>`,
+    casque: `<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M46 118 L46 96 Q46 52 100 52 Q154 52 154 96 L154 118" stroke="${c}" stroke-width="3" stroke-linecap="round"/>
+      <rect x="34" y="110" width="26" height="44" rx="10" stroke="${c}" stroke-width="3"/>
+      <rect x="140" y="110" width="26" height="44" rx="10" stroke="${c}" stroke-width="3"/>
+      <path d="M60 132 Q60 158 88 162" stroke="${c}" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+      <circle cx="94" cy="163" r="3.5" fill="${c}"/>
+      <line x1="47" y1="84" x2="47" y2="98" stroke="${c}" stroke-width="2" opacity="0.5"/>
+      <line x1="153" y1="84" x2="153" y2="98" stroke="${c}" stroke-width="2" opacity="0.5"/>
+    </svg>`,
+    laptop: `<svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="46" y="48" width="108" height="72" rx="7" stroke="${c}" stroke-width="3"/>
+      <rect x="56" y="58" width="88" height="52" rx="3" stroke="${c}" stroke-width="2" opacity="0.4"/>
+      <path d="M32 132 L168 132 L156 148 L44 148 Z" stroke="${c}" stroke-width="3" stroke-linejoin="round"/>
+      <line x1="88" y1="140" x2="112" y2="140" stroke="${c}" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+      <circle cx="100" cy="115" r="2.5" fill="${c}" opacity="0.7"/>
     </svg>`
   };
   return icones[nom] || icones.tshirt;

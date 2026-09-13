@@ -21,20 +21,23 @@ Site vitrine + panier + tunnel de commande, en HTML/CSS/JavaScript pur (aucune i
 
 ```
 site/
-├── index.html            → Page d'accueil + catalogue produits
-├── produit.html           → Fiche produit détaillée (?id=...)
-├── panier.html             → Panier (quantités, sous-total, livraison)
+├── index.html            → Page d'accueil + catalogue (recherche, tri, vu récemment)
+├── produit.html           → Fiche produit détaillée (?id=...) + variantes taille/couleur
+├── panier.html             → Panier (quantités, variantes, sous-total, livraison)
 ├── paiement.html            → Tunnel de commande (livraison + mode de paiement)
 ├── confirmation.html         → Page de confirmation après commande
+├── favoris.html               → Page "Mes favoris" (wishlist, localStorage)
 ├── mentions-legales.html      → Mentions légales (modèle à compléter)
 ├── cgv.html                    → Conditions générales de vente (modèle)
 ├── confidentialite.html         → Politique de confidentialité (modèle)
 ├── contact.html                  → Formulaire de contact
 ├── css/style.css                  → Toute la mise en forme du site (palette NOVA)
 └── js/
-    ├── data.js    → Catalogue produits (modifiez ce fichier pour vos produits)
-    ├── icones.js  → Illustrations vectorielles des produits (mode & tech)
-    └── panier.js  → Logique du panier (stockage local du navigateur, clé nova_panier)
+    ├── data.js       → Catalogue produits + variantes, dateAjout, popularité
+    ├── icones.js     → Illustrations vectorielles des produits (mode & tech)
+    ├── panier.js     → Logique du panier (localStorage, clé nova_panier) + stocks variantes
+    ├── boutique.js   → v2 : toasts, favoris, badge stock, cartes, vu récemment, recherche
+    └── menu.js       → Menu mobile (drawer) avec recherche + favoris
 ```
 
 ## Identité visuelle NOVA
@@ -45,6 +48,16 @@ site/
 - **Rayons** : coins arrondis (`--radius: 14px`, `--radius-sm: 8px`, `--radius-lg: 20px`)
 - **Ombres** : carte au repos légère, ombre colorée indigo au survol
 - **Focus** : outline indigo sur tous les éléments interactifs
+
+## Fonctionnalités v2 (novembre 2026)
+
+1. **Barre de recherche** — dans la barre de nav (et dans le drawer mobile). Sur l'accueil, le filtrage est instantané (nom, catégorie, accroche, accents ignorés) et se combine aux filtres de catégorie. Sur les autres pages, elle renvoie vers `index.html?q=…`.
+2. **Tri des produits** — menu "Trier :" au-dessus de la grille : Prix croissant / décroissant (champ `prix`), Nouveautés (champ `dateAjout`, "AAAA-MM-JJ"), Popularité (champ `popularite`, 0-100).
+3. **Variantes produits** — les produits `Vêtements` (t-shirt, pull, short, veste) portent un tableau `variantes` dans `data.js` : `{ taille, couleur, hex, stock }`. La fiche produit affiche les tailles S/M/L/XL et les couleurs (pastille `hex`), avec stock par variante. Le panier distingue chaque variante (clé `id|Taille|Couleur`) — les anciens paniers restent compatibles.
+4. **Wishlist / Favoris** — cœur sur chaque carte et sur la fiche produit, sauvegarde `localStorage` (clé `nova_favoris`), badge dans la nav, page dédiée `favoris.html`.
+5. **Notifications toast** — ajout au panier, favoris, limites de stock : message animé en bas de l'écran avec lien "Voir le panier", au lieu du simple "✓".
+6. **Indicateur de stock sur les cartes** — badge ambre "Plus que X en stock !" quand le stock total est ≤ 5 (constante `SEUIL_STOCK_URGENCE` dans `boutique.js`), badge rouge "Rupture de stock" à 0, bouton + désactivé.
+7. **Page "Vu récemment"** — les fiches consultées sont mémorisées (clé `nova_vus_recemment`, 8 max) et affichées dans une section dédiée de l'accueil.
 
 ## Catalogue produits
 

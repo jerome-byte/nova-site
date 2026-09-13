@@ -19,6 +19,10 @@
       <a href="contact.html">Contact</a>
     </nav>
     <div class="nav-actions">
+      <form class="recherche-form" role="search" action="index.html" method="get" data-recherche>
+        <input type="search" class="recherche-input" name="q" placeholder="Rechercher un produit…" aria-label="Rechercher un produit" autocomplete="off">
+      </form>
+      <a href="favoris.html" class="lien-panier">Favoris <span class="badge-panier badge-favoris" data-badge-favoris style="display:none;">0</span></a>
       <a href="panier.html" class="lien-panier">
         Panier <span class="badge-panier" data-badge-panier style="display:none;">0</span>
       </a>
@@ -63,9 +67,34 @@
         <h2>Mode, tech &amp; accessoires</h2>
         <p>Quatre familles de produits, une seule exigence de style et de qualité.</p>
       </div>
-      <div class="filtres" id="filtres-categories"></div>
+      <div class="barre-outils">
+        <div class="filtres" id="filtres-categories"></div>
+        <div class="outil-tri">
+          <label for="tri-produits">Trier&nbsp;:</label>
+          <select class="tri-select" id="tri-produits">
+            <option value="defaut">Pertinence</option>
+            <option value="prix-asc">Prix croissant</option>
+            <option value="prix-desc">Prix décroissant</option>
+            <option value="nouveautes">Nouveautés</option>
+            <option value="popularite">Popularité</option>
+          </select>
+          <span class="compte-produits" id="compte-produits"></span>
+        </div>
+      </div>
     </div>
     <div class="grille-produits" id="grille-produits"></div>
+  </div>
+</section>
+
+<section class="section" id="section-vus" style="padding-top:0; display:none;">
+  <div class="enveloppe" style="border-top:1px solid var(--ligne); padding-top:56px;">
+    <div class="section-tete">
+      <div>
+        <h2>Vu récemment</h2>
+        <p>Les fiches produits que vous venez de consulter.</p>
+      </div>
+    </div>
+    <div class="grille-produits" id="grille-vus"></div>
   </div>
 </section>
 
@@ -91,6 +120,7 @@
         <h4>Boutique</h4>
         <ul>
           <li><a href="index.html#catalogue">Tous les produits</a></li>
+          <li><a href="favoris.html">Mes favoris</a></li>
           <li><a href="panier.html">Mon panier</a></li>
         </ul>
       </div>
@@ -121,12 +151,13 @@
 <script src="js/data.js"></script>
 <script src="js/icones.js"></script>
 <script src="js/panier.js"></script>
+<script src="js/boutique.js"></script>
 <script src="js/menu.js"></script>
 <script>
-  /* ---------- CARROUSEL HERO ---------- */
+  /* ---------- CARROUSEL HERO (logique inchangée) ---------- */
   // On prend 5 produits variés pour le carrousel
   const slidesCarousel = [
-    PRODUITS.find(p => p.id === "baskets-urban-runner"),
+    PRODUITS.find(p => p.id === "baskets1-urban-runner"),
     PRODUITS.find(p => p.id === "smartphone-nova-x5"),
     PRODUITS.find(p => p.id === "veste-jean-classic"),
     PRODUITS.find(p => p.id === "lunettes-soleil-nova"),
@@ -204,40 +235,64 @@
 
   demarrerAuto();
 
-  /* ---------- FILTRES CATALOGUE ---------- */
+  /* ---------- CATALOGUE : filtres catégorie + recherche + tri ---------- */
   const categories = ["Toutes", ...new Set(PRODUITS.map(p => p.categorie))];
   const conteneurFiltres = document.getElementById("filtres-categories");
   const grille = document.getElementById("grille-produits");
+  const selectTri = document.getElementById("tri-produits");
+  const compteProduits = document.getElementById("compte-produits");
 
-  function carteProduit(p) {
-    return `
-      <article class="carte-produit">
-        <a href="produit.html?id=${p.id}" class="carte-produit-visuel" style="background:${p.couleurFond}">${iconeSVG(p.icone, p.couleur, p.image)}</a>
-        <div class="carte-produit-corps">
-          <span class="carte-produit-cat" style="color:${p.couleur}">${p.categorie}</span>
-          <a href="produit.html?id=${p.id}"><h3 class="carte-produit-nom">${p.nom}</h3></a>
-          <p class="carte-produit-accroche">${p.accroche}</p>
-          <div class="carte-produit-bas">
-            <span class="carte-produit-prix">${formatPrix(p.prix)}</span>
-            <button class="bouton-ajout-rapide" title="Ajouter au panier" data-ajout="${p.id}">+</button>
-          </div>
-        </div>
-      </article>`;
-  }
+  let categorieCourante = "Toutes";
 
-  function afficherProduits(filtre) {
-    const liste = filtre === "Toutes" ? PRODUITS : PRODUITS.filter(p => p.categorie === filtre);
-    grille.innerHTML = liste.map(carteProduit).join("");
-    grille.querySelectorAll("[data-ajout]").forEach(function (btn) {
-      btn.addEventListener("click", function (e) {
-        e.preventDefault();
-        ajouterAuPanier(btn.dataset.ajout, 1);
-        btn.textContent = "✓";
-        setTimeout(() => btn.textContent = "+", 900);
+  const comparateursTri = {
+    "prix-asc":   (a, b) => a.prix - b.prix,
+    "prix-desc":  (a, b) => b.prix - a.prix,
+    "nouveautes": (a, b) => (b.dateAjout || "").localeCompare(a.dateAjout || ""),
+    "popularite": (a, b) => (b.popularite || 0) - (a.popularite || 0)
+  };
+
+  /* Appelée par la barre de recherche (boutique.js) à chaque frappe. */
+  function appliquerFiltresCatalogue() {
+    const champRecherche = document.querySelector("form[data-recherche] input[name='q']");
+    const recherche = normaliserTexte(champRecherche ? champRecherche.value : "").trim();
+    const mots = recherche.split(/\s+/).filter(Boolean);
+
+    let liste = categorieCourante === "Toutes"
+      ? PRODUITS.slice()
+      : PRODUITS.filter(p => p.categorie === categorieCourante);
+
+    if (mots.length) {
+      liste = liste.filter(p => {
+        const cible = normaliserTexte(p.nom + " " + p.categorie + " " + (p.accroche || ""));
+        return mots.every(m => cible.indexOf(m) !== -1);
       });
-    });
+    }
+
+    const comparateur = comparateursTri[selectTri.value];
+    if (comparateur) liste.sort(comparateur);
+
+    compteProduits.textContent = liste.length + (liste.length > 1 ? " produits" : " produit");
+
+    if (liste.length === 0) {
+      grille.innerHTML = `
+        <div class="vide-recherche">
+          <p>Aucun produit ne correspond à votre recherche.</p>
+          <button type="button" class="bouton bouton-secondaire" id="bouton-reinit">Réinitialiser les filtres</button>
+        </div>`;
+      document.getElementById("bouton-reinit").addEventListener("click", function () {
+        document.querySelectorAll("form[data-recherche] input[name='q']").forEach(i => i.value = "");
+        selectTri.value = "defaut";
+        categorieCourante = "Toutes";
+        conteneurFiltres.querySelectorAll(".filtre-bouton").forEach(b => b.classList.toggle("actif", b.dataset.cat === "Toutes"));
+        appliquerFiltresCatalogue();
+      });
+      return;
+    }
+
+    grille.innerHTML = liste.map(carteProduitHTML).join("");
   }
 
+  /* Filtres catégories (logique d'origine conservée) */
   conteneurFiltres.innerHTML = categories.map(function (cat, i) {
     return `<button class="filtre-bouton ${i === 0 ? 'actif' : ''}" data-cat="${cat}">${cat}</button>`;
   }).join("");
@@ -246,11 +301,20 @@
     btn.addEventListener("click", function () {
       conteneurFiltres.querySelectorAll(".filtre-bouton").forEach(b => b.classList.remove("actif"));
       btn.classList.add("actif");
-      afficherProduits(btn.dataset.cat);
+      categorieCourante = btn.dataset.cat;
+      appliquerFiltresCatalogue();
     });
   });
 
-  afficherProduits("Toutes");
+  selectTri.addEventListener("change", appliquerFiltresCatalogue);
+
+  /* Favoris + ajout rapide (toasts) branchés une seule fois sur la grille */
+  brancherGrille(grille);
+
+  appliquerFiltresCatalogue();
+
+  /* ---------- VU RÉCEMMENT ---------- */
+  afficherVusRecemment("section-vus", "grille-vus");
 </script>
 </body>
 </html>

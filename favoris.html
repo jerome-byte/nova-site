@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mes favoris — NOVA</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="entete">
+  <div class="barre-annonce">Livraison offerte dès 50 000 FCFA d'achat — Expédition sous 48h depuis Lomé</div>
+  <div class="nav enveloppe">
+    <a href="index.html" class="logo">NOVA<span>MODE &amp; TECH</span></a>
+    <nav class="nav-liens">
+      <a href="index.html">Boutique</a>
+      <a href="index.html#categories">Catégories</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <form class="recherche-form" role="search" action="index.html" method="get" data-recherche>
+        <input type="search" class="recherche-input" name="q" placeholder="Rechercher un produit…" aria-label="Rechercher un produit" autocomplete="off">
+      </form>
+      <a href="favoris.html" class="lien-panier">Favoris <span class="badge-panier badge-favoris" data-badge-favoris style="display:none;">0</span></a>
+      <a href="panier.html" class="lien-panier">
+        Panier <span class="badge-panier" data-badge-panier style="display:none;">0</span>
+      </a>
+      <button type="button" class="bouton-menu" id="bouton-menu-ouvrir" aria-label="Ouvrir le menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="page-titre enveloppe">
+  <h1>Mes favoris</h1>
+</div>
+
+<div id="contenu-favoris"></div>
+
+<footer class="pied">
+  <div class="enveloppe">
+    <div class="pied-grille">
+      <div class="pied-marque">
+        <div class="logo">NOVA<span>MODE &amp; TECH</span></div>
+        <p>Mode urbaine, accessoires et tech du quotidien, sélectionnés pour durer.</p>
+      </div>
+      <div>
+        <h4>Boutique</h4>
+        <ul><li><a href="index.html#catalogue">Tous les produits</a></li><li><a href="favoris.html">Mes favoris</a></li><li><a href="panier.html">Mon panier</a></li></ul>
+      </div>
+      <div>
+        <h4>Informations</h4>
+        <ul><li><a href="mentions-legales.html">Mentions légales</a></li><li><a href="cgv.html">Conditions générales de vente</a></li><li><a href="confidentialite.html">Politique de confidentialité</a></li></ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul><li><a href="contact.html">Nous écrire</a></li><li><a href="mailto:contact@nova.tg">contact@nova.tg</a></li></ul>
+      </div>
+    </div>
+    <div class="pied-bas"><span>© 2026 NOVA. Tous droits réservés.</span><span>Lomé, Togo</span></div>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/icones.js"></script>
+<script src="js/panier.js"></script>
+<script src="js/boutique.js"></script>
+<script src="js/menu.js"></script>
+<script>
+  /* Sur cette page, retirer un favori retire aussi la carte correspondante. */
+  function rafraichirPageFavoris() {
+    rendreFavoris();
+  }
+
+  function rendreFavoris() {
+    const conteneur = document.getElementById("contenu-favoris");
+    const produits = lireFavoris().map(getProduitParId).filter(Boolean);
+
+    if (produits.length === 0) {
+      conteneur.innerHTML = `
+        <div class="panier-vide enveloppe">
+          <h2 class="serif" style="font-size:1.4rem;">Votre liste de favoris est vide</h2>
+          <p>Touchez le cœur sur un produit pour le retrouver ici, sur cet appareil.</p>
+          <a href="index.html" class="bouton bouton-primaire">Découvrir la boutique</a>
+        </div>`;
+      return;
+    }
+
+    conteneur.innerHTML = `
+      <div class="enveloppe" style="padding-bottom:90px;">
+        <p class="compte-favoris">${produits.length} favori${produits.length > 1 ? "s" : ""} enregistré${produits.length > 1 ? "s" : ""} sur cet appareil.</p>
+        <div class="grille-produits" id="grille-favoris"></div>
+      </div>`;
+    const grille = document.getElementById("grille-favoris");
+    grille.innerHTML = produits.map(carteProduitHTML).join("");
+    brancherGrille(grille);
+  }
+
+  rendreFavoris();
+</script>
+</body>
+</html>

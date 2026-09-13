@@ -18,6 +18,10 @@
       <a href="contact.html">Contact</a>
     </nav>
     <div class="nav-actions">
+      <form class="recherche-form" role="search" action="index.html" method="get" data-recherche>
+        <input type="search" class="recherche-input" name="q" placeholder="Rechercher un produit…" aria-label="Rechercher un produit" autocomplete="off">
+      </form>
+      <a href="favoris.html" class="lien-panier">Favoris <span class="badge-panier badge-favoris" data-badge-favoris style="display:none;">0</span></a>
       <a href="panier.html" class="lien-panier">
         Panier <span class="badge-panier" data-badge-panier style="display:none;">0</span>
       </a>
@@ -54,7 +58,7 @@
       </div>
       <div>
         <h4>Boutique</h4>
-        <ul><li><a href="index.html#catalogue">Tous les produits</a></li><li><a href="panier.html">Mon panier</a></li></ul>
+        <ul><li><a href="index.html#catalogue">Tous les produits</a></li><li><a href="favoris.html">Mes favoris</a></li><li><a href="panier.html">Mon panier</a></li></ul>
       </div>
       <div>
         <h4>Informations</h4>
@@ -72,6 +76,7 @@
 <script src="js/data.js"></script>
 <script src="js/icones.js"></script>
 <script src="js/panier.js"></script>
+<script src="js/boutique.js"></script>
 <script src="js/menu.js"></script>
 <script>
   const params = new URLSearchParams(location.search);
@@ -79,6 +84,56 @@
   document.title = produit.nom + " — NOVA";
   document.getElementById("fil-categorie").textContent = produit.categorie;
   document.getElementById("fil-nom").textContent = produit.nom;
+
+  /* ---------- Variantes (vêtements) : état courant ---------- */
+  const aVariantes = Array.isArray(produit.variantes) && produit.variantes.length > 0;
+  let tailleCourante = null;
+  let couleurCourante = null;
+  let varianteCourante = null;
+
+  if (aVariantes) {
+    var taillesUniques = [...new Set(produit.variantes.map(v => v.taille))];
+    var couleursUniques = [];
+    produit.variantes.forEach(function (v) {
+      if (!couleursUniques.some(c => c.nom === v.couleur)) {
+        couleursUniques.push({ nom: v.couleur, hex: v.hex || "#CCCCCC" });
+      }
+    });
+
+    var premierTailleDispo = taillesUniques.find(function (t) {
+      return produit.variantes.some(v => v.taille === t && v.stock > 0);
+    }) || taillesUniques[0];
+
+    tailleCourante = premierTailleDispo;
+    var premiereCouleurDispo = couleursUniques.find(function (c) {
+      const v = varianteDe(tailleCourante, c.nom);
+      return v && v.stock > 0;
+    });
+    couleurCourante = premiereCouleurDispo ? premiereCouleurDispo.nom : couleursUniques[0].nom;
+  }
+
+  function varianteDe(taille, couleur) {
+    return produit.variantes.find(function (v) {
+      return v.taille === taille && v.couleur === couleur;
+    }) || null;
+  }
+
+  function stockCourant() {
+    if (!aVariantes) return produit.stock;
+    return varianteCourante ? varianteCourante.stock : 0;
+  }
+
+  const blocVariantesHTML = aVariantes ? `
+      <div class="variantes-bloc" id="variantes-bloc">
+        <div class="groupe-variante">
+          <div class="groupe-variante-label">Taille <span id="label-taille"></span></div>
+          <div class="boutons-variante" id="boutons-taille"></div>
+        </div>
+        <div class="groupe-variante">
+          <div class="groupe-variante-label">Couleur <span id="label-couleur"></span></div>
+          <div class="boutons-variante" id="boutons-couleur"></div>
+        </div>
+      </div>` : "";
 
   document.getElementById("zone-produit").innerHTML = `
     <div class="produit-visuel-principal" style="background:${produit.couleurFond}">${iconeSVG(produit.icone, produit.couleur, produit.image)}</div>
@@ -91,14 +146,16 @@
       <ul class="liste-caract">
         ${produit.caracteristiques.map(c => `<li>${c}</li>`).join("")}
       </ul>
-      <span class="stock-info">${produit.stock > 0 ? produit.stock + " en stock — expédition sous 48h" : "Rupture de stock temporaire"}</span>
+      ${blocVariantesHTML}
+      <span class="stock-info" id="stock-info"></span>
       <div class="produit-actions">
         <div class="selecteur-qte">
           <button type="button" id="qte-moins">–</button>
           <input type="text" id="qte-valeur" value="1" inputmode="numeric">
           <button type="button" id="qte-plus">+</button>
         </div>
-        <button class="bouton bouton-primaire" id="bouton-ajouter" style="flex:1;" ${produit.stock === 0 ? "disabled" : ""}>Ajouter au panier</button>
+        <button class="bouton bouton-primaire" id="bouton-ajouter" style="flex:1;">Ajouter au panier</button>
+        ${boutonFavoriHTML(produit.id).replace('class="bouton-favori', 'class="bouton-favori favori-produit')}
       </div>
       <details class="onglets-info" open>
         <div class="onglet-item">
@@ -113,38 +170,123 @@
     </div>
   `;
 
-  document.getElementById("qte-moins").addEventListener("click", function(){
-    const c = document.getElementById("qte-valeur");
-    c.value = Math.max(1, parseInt(c.value || "1") - 1);
+  /* ---------- Cœur favori de la fiche ---------- */
+  const coeurProduit = document.querySelector("#zone-produit .bouton-favori");
+  coeurProduit.addEventListener("click", function () {
+    const actif = basculerFavori(produit.id);
+    coeurProduit.classList.toggle("actif", actif);
+    coeurProduit.setAttribute("aria-pressed", String(actif));
   });
-  document.getElementById("qte-plus").addEventListener("click", function(){
-    const c = document.getElementById("qte-valeur");
-    c.value = Math.min(produit.stock, parseInt(c.value || "1") + 1);
-  });
+
+  /* ---------- Rendu et comportement des variantes ---------- */
   const boutonAjouter = document.getElementById("bouton-ajouter");
-  if (boutonAjouter) {
-    boutonAjouter.addEventListener("click", function(){
-      const qte = parseInt(document.getElementById("qte-valeur").value || "1");
-      ajouterAuPanier(produit.id, qte);
-      boutonAjouter.textContent = "Ajouté au panier ✓";
-      setTimeout(() => boutonAjouter.textContent = "Ajouter au panier", 1400);
+  const champQte = document.getElementById("qte-valeur");
+
+  function rendreBoutonsVariantes() {
+    if (!aVariantes) return;
+
+    document.getElementById("boutons-taille").innerHTML = taillesUniques.map(function (t) {
+      const indisponible = !produit.variantes.some(v => v.taille === t && v.stock > 0);
+      return `<button type="button" class="bouton-variante ${t === tailleCourante ? "actif" : ""}" data-taille="${t}" ${indisponible ? "disabled" : ""}>${t}</button>`;
+    }).join("");
+
+    document.getElementById("boutons-couleur").innerHTML = couleursUniques.map(function (c) {
+      const v = varianteDe(tailleCourante, c.nom);
+      const indisponible = !v || v.stock === 0;
+      return `<button type="button" class="bouton-variante ${c.nom === couleurCourante ? "actif" : ""}" data-couleur="${c.nom}" ${indisponible ? "disabled" : ""}>
+                <span class="puce-couleur" style="--puce:${c.hex}"></span>${c.nom}
+              </button>`;
+    }).join("");
+
+    document.querySelectorAll("#boutons-taille .bouton-variante").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        tailleCourante = btn.dataset.taille;
+        const couleurOk = couleursUniques.find(function (c) {
+          const v = varianteDe(tailleCourante, c.nom);
+          return v && v.stock > 0;
+        });
+        if (!varianteDe(tailleCourante, couleurCourante) || (varianteDe(tailleCourante, couleurCourante) || {}).stock === 0) {
+          couleurCourante = couleurOk ? couleurOk.nom : couleurCourante;
+        }
+        rendreBoutonsVariantes();
+        majEtatVariante();
+      });
+    });
+
+    document.querySelectorAll("#boutons-couleur .bouton-variante").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        couleurCourante = btn.dataset.couleur;
+        rendreBoutonsVariantes();
+        majEtatVariante();
+      });
     });
   }
 
+  function majEtatVariante() {
+    const info = document.getElementById("stock-info");
+
+    if (aVariantes) {
+      varianteCourante = varianteDe(tailleCourante, couleurCourante);
+      document.getElementById("label-taille").textContent = "— " + tailleCourante;
+      document.getElementById("label-couleur").textContent = "— " + couleurCourante;
+    }
+
+    const stock = stockCourant();
+
+    info.classList.remove("urgent", "rupture");
+    if (stock === 0) {
+      info.classList.add("rupture");
+      info.textContent = aVariantes
+        ? "Épuisé pour cette variante — choisissez une autre taille ou couleur"
+        : "Rupture de stock temporaire";
+    } else if (stock <= SEUIL_STOCK_URGENCE) {
+      info.classList.add("urgent");
+      info.textContent = "Plus que " + stock + " en stock ! — expédition sous 48h";
+    } else {
+      info.textContent = stock + " en stock — expédition sous 48h";
+    }
+
+    boutonAjouter.disabled = stock === 0;
+    const valeur = Math.max(1, Math.min(parseInt(champQte.value || "1", 10) || 1, stock || 1));
+    champQte.value = stock === 0 ? 1 : valeur;
+  }
+
+  document.getElementById("qte-moins").addEventListener("click", function(){
+    champQte.value = Math.max(1, parseInt(champQte.value || "1") - 1);
+  });
+  document.getElementById("qte-plus").addEventListener("click", function(){
+    champQte.value = Math.min(stockCourant(), Math.max(1, parseInt(champQte.value || "1") + 1));
+  });
+
+  boutonAjouter.addEventListener("click", function(){
+    const qte = Math.max(1, parseInt(champQte.value || "1", 10) || 1);
+    const variante = aVariantes ? { taille: tailleCourante, couleur: couleurCourante } : null;
+    const resultat = ajouterAuPanier(produit.id, qte, variante);
+    if (resultat.ok) {
+      const detail = variante ? " (Taille " + variante.taille + " · " + variante.couleur + ")" : "";
+      afficherToast(produit.nom + detail + " ajouté au panier", "succes", { href: "panier.html", texte: "Voir le panier" });
+      boutonAjouter.textContent = "Ajouté au panier ✓";
+      setTimeout(() => boutonAjouter.textContent = "Ajouter au panier", 1400);
+    } else {
+      afficherToast("Stock maximum atteint (" + resultat.stock + " disponible" + (resultat.stock > 1 ? "s" : "") + ")", "info");
+    }
+  });
+
+  if (aVariantes) {
+    rendreBoutonsVariantes();
+  }
+  majEtatVariante();
+
+  /* ---------- Mémoriser la visite ("Vu récemment" de l'accueil) ---------- */
+  enregistrerVue(produit.id);
+
+  /* ---------- Vous aimerez aussi (cartes partagées : cœur + badge stock) ---------- */
   const associes = PRODUITS.filter(p => p.categorie === produit.categorie && p.id !== produit.id).slice(0,4);
   const complement = PRODUITS.filter(p => p.categorie !== produit.categorie).slice(0, 4 - associes.length);
   const listeAssociee = [...associes, ...complement];
-  document.getElementById("produits-associes").innerHTML = listeAssociee.map(p => `
-    <article class="carte-produit">
-      <a href="produit.html?id=${p.id}" class="carte-produit-visuel" style="background:${p.couleurFond}">${iconeSVG(p.icone, p.couleur, p.image)}</a>
-      <div class="carte-produit-corps">
-        <span class="carte-produit-cat" style="color:${p.couleur}">${p.categorie}</span>
-        <a href="produit.html?id=${p.id}"><h3 class="carte-produit-nom">${p.nom}</h3></a>
-        <p class="carte-produit-accroche">${p.accroche}</p>
-        <div class="carte-produit-bas"><span class="carte-produit-prix">${formatPrix(p.prix)}</span></div>
-      </div>
-    </article>
-  `).join("");
+  const zoneAssocies = document.getElementById("produits-associes");
+  zoneAssocies.innerHTML = listeAssociee.map(carteProduitHTML).join("");
+  brancherGrille(zoneAssocies);
 </script>
 </body>
 </html>
