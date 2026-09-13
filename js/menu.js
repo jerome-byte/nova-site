@@ -1,6 +1,7 @@
 /* NOVA — Menu mobile (toggle + drawer)
    Gère l'ouverture/fermeture du panneau coulissant sur mobile.
-   v2 : le drawer embarque aussi la barre de recherche et le lien Favoris. */
+   v2 : le drawer embarque aussi la barre de recherche et le lien Favoris.
+   v3 : le drawer embarque le bouton mode sombre / clair (js/theme.js). */
 
 document.addEventListener("DOMContentLoaded", function () {
   // Injecter le markup du drawer si non présent (évite de répéter dans chaque HTML)
@@ -20,9 +21,15 @@ document.addEventListener("DOMContentLoaded", function () {
     drawer.innerHTML = `
       <div class="drawer-menu-tete">
         <a href="index.html" class="logo">NOVA<span>MODE &amp; TECH</span></a>
-        <button type="button" class="bouton-menu actif" id="bouton-menu-fermer" aria-label="Fermer le menu">
-          <span></span><span></span><span></span>
-        </button>
+        <div style="display:flex; align-items:center; gap:10px;">
+          <button type="button" class="bouton-theme" data-bascule-theme aria-label="Basculer le mode sombre / clair" title="Mode sombre / clair">
+            <svg class="icone-lune" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <svg class="icone-soleil" viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          </button>
+          <button type="button" class="bouton-menu actif" id="bouton-menu-fermer" aria-label="Fermer le menu">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
       </div>
       <form class="recherche-form recherche-drawer" role="search" action="index.html" method="get">
         <input type="search" class="recherche-input" name="q" placeholder="Rechercher un produit…" aria-label="Rechercher un produit" autocomplete="off">

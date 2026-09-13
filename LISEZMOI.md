@@ -21,84 +21,8 @@ Site vitrine + panier + tunnel de commande, en HTML/CSS/JavaScript pur (aucune i
 
 ```
 site/
-├── index.html            → Page d'accueil + catalogue produits
-├── produit.html           → Fiche produit détaillée (?id=...)
-├── panier.html             → Panier (quantités, sous-total, livraison)
-├── paiement.html            → Tunnel de commande (livraison + mode de paiement)
-├── confirmation.html         → Page de confirmation après commande
-├── mentions-legales.html      → Mentions légales (modèle à compléter)
-├── cgv.html                    → Conditions générales de vente (modèle)
-├── confidentialite.html         → Politique de confidentialité (modèle)
-├── contact.html                  → Formulaire de contact
-├── css/style.css                  → Toute la mise en forme du site (palette NOVA)
-└── js/
-    ├── data.js    → Catalogue produits (modifiez ce fichier pour vos produits)
-    ├── icones.js  → Illustrations vectorielles des produits (mode & tech)
-    └── panier.js  → Logique du panier (stockage local du navigateur, clé nova_panier)
-```
-
-## Identité visuelle NOVA
-
-- **Palette** : indigo `#4F46E5`, violet `#8B5CF6`, corail `#FF6F61`, vert `#10B981`, rose `#EC4899`, ambre `#F59E0B`, bleu ciel `#0EA5E9`
-- **Dégradé signature** : indigo → violet → corail (utilisé pour la bannière d'annonce, le logo, le hero visuel et le footer)
-- **Typographie** : Space Grotesk (titres) + Inter (corps)
-- **Rayons** : coins arrondis (`--radius: 14px`, `--radius-sm: 8px`, `--radius-lg: 20px`)
-- **Ombres** : carte au repos légère, ombre colorée indigo au survol
-- **Focus** : outline indigo sur tous les éléments interactifs
-
-## Catalogue produits
-
-Le catalogue est composé de 10 articles répartis en 4 familles :
-
-- **Vêtements** : T-shirt coton bio, Pull maille Urban, Short Urban cargos, Veste en jean Classic
-- **Chaussures** : Baskets Urban runner
-- **Accessoires** : Lunettes de soleil NOVA, Casquette snapback NOVA, Sac à dos Urban 25L
-- **Tech** : Smartphone NOVA X5, Montre connectée NOVA Watch
-
-Chaque produit possède sa propre couleur d'accent et sa couleur de fond, définies dans `js/data.js` par les champs `couleur` et `couleurFond`.
-
-## Avant la mise en ligne réelle
-
-Ce site est un livrable fonctionnel prêt pour la démonstration locale, mais quelques points sont à traiter avant une mise en ligne commerciale :
-
-1. **Paiement réel** — Le formulaire de paiement (`paiement.html`) est une simulation : aucune transaction n'est réellement traitée. Pour accepter de vrais paiements, il faut intégrer un prestataire agréé (par ex. CinetPay, PayGate, Stripe, ou l'API Mobile Money de votre opérateur) via un serveur backend sécurisé — les identifiants de paiement ne doivent jamais être traités uniquement côté navigateur.
-2. **Mentions légales et CGV** — Les pages `mentions-legales.html` et `cgv.html` contiennent des modèles génériques avec des champs `[à compléter]`. Faites-les valider par un professionnel du droit avant publication.
-3. **Nom de domaine et hébergement** — Il faudra héberger ces fichiers sur un service d'hébergement web (mutualisé, VPS, ou hébergement statique type Netlify/Vercel/OVH) et pointer un nom de domaine dessus.
-4. **Gestion des stocks et commandes** — Actuellement, les commandes ne sont pas transmises à un système de gestion : il n'y a pas de base de données. Pour un usage réel, il faudra un minimum de backend pour recevoir, stocker et notifier les commandes (e-mail, tableau de gestion, etc.).
-5. **Photos produits** — Les produits utilisent des illustrations vectorielles génériques. Remplacez-les par de vraies photos de vos produits (voir `js/data.js` et `js/icones.js`).
-6. **Nom de domaine e-mail** — Les adresses `@nova.tg` et le numéro de téléphone sont des exemples à remplacer par vos vraies coordonnées.
-
-## Personnaliser le catalogue
-
-Ouvrez `js/data.js` : chaque produit est un objet avec un nom, une catégorie, un prix (en FCFA), une description, une icône, une couleur d'accent et une couleur de fond. Ajoutez, modifiez ou supprimez des entrées dans le tableau `PRODUITS` — le site se met à jour automatiquement.
-
-Pour ajouter une nouvelle icône, ajoutez une entrée dans la fonction `iconeSVG` du fichier `js/icones.js`.
-
-# NOVA — Site e-commerce mode & tech (démonstration statique)
-
-Site vitrine + panier + tunnel de commande, en HTML/CSS/JavaScript pur (aucune installation requise).
-
-## Lancer le site en local
-
-**Option la plus simple :** double-cliquez sur `index.html`, il s'ouvrira dans votre navigateur.
-
-**Option recommandée (évite quelques limitations du navigateur) :** lancez un petit serveur local.
-
-- Avec Python (déjà installé sur macOS/Linux, à installer sur Windows) :
-  ```
-  cd chemin/vers/le/dossier/site
-  python3 -m http.server 8000
-  ```
-  puis ouvrez http://localhost:8000 dans votre navigateur.
-
-- Avec VS Code : installez l'extension "Live Server", clic droit sur `index.html` → "Open with Live Server".
-
-## Structure du projet
-
-```
-site/
 ├── index.html            → Page d'accueil + catalogue (recherche, tri, vu récemment)
-├── produit.html           → Fiche produit détaillée (?id=...) + variantes taille/couleur
+├── produit.html           → Fiche produit détaillée (?id=...) + variantes, galerie, avis
 ├── panier.html             → Panier (quantités, variantes, sous-total, livraison)
 ├── paiement.html            → Tunnel de commande (livraison + mode de paiement)
 ├── confirmation.html         → Page de confirmation après commande
@@ -107,13 +31,17 @@ site/
 ├── cgv.html                    → Conditions générales de vente (modèle)
 ├── confidentialite.html         → Politique de confidentialité (modèle)
 ├── contact.html                  → Formulaire de contact
-├── css/style.css                  → Toute la mise en forme du site (palette NOVA)
+├── css/style.css                  → Toute la mise en forme (palette NOVA + thème sombre)
 └── js/
     ├── data.js       → Catalogue produits + variantes, dateAjout, popularité
     ├── icones.js     → Illustrations vectorielles des produits (mode & tech)
     ├── panier.js     → Logique du panier (localStorage, clé nova_panier) + stocks variantes
     ├── boutique.js   → v2 : toasts, favoris, badge stock, cartes, vu récemment, recherche
-    └── menu.js       → Menu mobile (drawer) avec recherche + favoris
+    ├── theme.js      → v3 : mode sombre / clair (localStorage, appliqué avant le rendu)
+    ├── effets.js     → v3 : apparitions au scroll + squelettes de chargement d'images
+    ├── avis.js       → v3 : avis clients (étoiles + commentaires, localStorage)
+    ├── galerie.js    → v3 : galerie multi-images de la fiche produit
+    └── menu.js       → Menu mobile (drawer) avec recherche, favoris et bouton thème
 ```
 
 ## Identité visuelle NOVA
@@ -135,14 +63,22 @@ site/
 6. **Indicateur de stock sur les cartes** — badge ambre "Plus que X en stock !" quand le stock total est ≤ 5 (constante `SEUIL_STOCK_URGENCE` dans `boutique.js`), badge rouge "Rupture de stock" à 0, bouton + désactivé.
 7. **Page "Vu récemment"** — les fiches consultées sont mémorisées (clé `nova_vus_recemment`, 8 max) et affichées dans une section dédiée de l'accueil.
 
+## Fonctionnalités v3 (2026)
+
+1. **Animations au scroll** — les cartes produit et les titres de section apparaissent en fondu avec un léger glissement quand ils entrent dans l'écran (IntersectionObserver + MutationObserver : les cartes re-rendues par la recherche ou le tri s'animent aussi, sans toucher à leur code). Les éléments déjà à l'écran au chargement restent statiques, et `prefers-reduced-motion` désigne tout.
+2. **Skeleton loading** — pendant le chargement d'une photo produit, le visuel affiche un reflet balayant (shimmer) sur le fond pastel du produit ; l'image fond ensuite en douceur. Si une image est cassée, le fond pastel reste affiché proprement.
+3. **Avis clients** — notes en étoiles + commentaires sur chaque fiche produit (`produit.html`) : note globale, répartition par étoile, formulaire avec sélection d'étoiles cliquables, publication instantanée en `localStorage` (clé `nova_avis`). Des avis de démonstration sont semés au premier chargement ; la note moyenne apparaît aussi sur les cartes du catalogue.
+4. **Mode sombre** — bouton lune/soleil dans la nav de toutes les pages et dans le drawer mobile. Le choix est mémorisé (`nova_theme`), la préférence système est respectée à la première visite, et le thème est appliqué avant le premier rendu (aucun flash blanc). Toute la palette s'inverse via les variables CSS.
+5. **Galerie multi-images** — sur la fiche produit, 4 vues générées à partir des données existantes (photo plein cadre, produit seul, détail zoomé, illustration vectorielle) avec miniatures cliquables, flèches et compteur. Pour de vraies photos multiples, ajoutez un champ `galerie: [url1, url2…]` dans `data.js`.
+
 ## Catalogue produits
 
-Le catalogue est composé de 10 articles répartis en 4 familles :
+Le catalogue est composé de 16 articles répartis en 4 familles :
 
-- **Vêtements** : T-shirt coton bio, Pull maille Urban, Short Urban cargos, Veste en jean Classic
-- **Chaussures** : Baskets Urban runner
-- **Accessoires** : Lunettes de soleil NOVA, Casquette snapback NOVA, Sac à dos Urban 25L
-- **Tech** : Smartphone NOVA X5, Montre connectée NOVA Watch
+- **Vêtements** : T-shirt coton bio Essentials, Pull maille Urban, Short Urban cargos, Veste en jean Classic
+- **Chaussures** : Baskets Urban runner, Original, The blue, Noire
+- **Accessoires** : Lunettes de soleil, Casquette snapback, Casque Ecouteure, Sac à dos Urban 25L
+- **Tech** : Smartphone X5, Ecran moniteur, Latop, Montre connectée Watch
 
 Chaque produit possède sa propre couleur d'accent et sa couleur de fond, définies dans `js/data.js` par les champs `couleur` et `couleurFond`.
 

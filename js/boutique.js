@@ -140,6 +140,8 @@ function carteProduitHTML(p) {
         '<span class="carte-produit-cat" style="color:' + p.couleur + '">' + p.categorie + "</span>" +
         '<a href="' + lien + '"><h3 class="carte-produit-nom">' + p.nom + "</h3></a>" +
         '<p class="carte-produit-accroche">' + p.accroche + "</p>" +
+        /* v3 : note moyenne des avis (affichée seulement si js/avis.js est chargé) */
+        (typeof ligneAvisCarte === "function" ? ligneAvisCarte(p.id) : "") +
         '<div class="carte-produit-bas">' +
           '<span class="carte-produit-prix">' + formatPrix(p.prix) + "</span>" +
           '<button class="bouton-ajout-rapide" title="' + (total > 0 ? "Ajouter au panier" : "Produit épuisé") + '" data-ajout="' + p.id + '"' + (total <= 0 ? " disabled" : "") + ">+</button>" +
