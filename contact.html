@@ -70,7 +70,8 @@
   </p>
 
   <h2>Formulaire de contact</h2>
-  <form class="formulaire-contact" id="form-contact">
+  <form class="formulaire-contact" id="form-contact" action="https://formspree.io/f/xbgjvkvv"
+  method="POST">
     <div class="champ"><label for="c-nom">Nom complet</label><input id="c-nom" required></div>
     <div class="champ"><label for="c-email">E-mail</label><input id="c-email" type="email" required></div>
     <div class="champ"><label for="c-sujet">Sujet</label>
@@ -85,7 +86,7 @@
       <textarea id="c-message" required rows="5" style="width:100%; padding:12px 14px; border:1px solid var(--ligne); border-radius:var(--radius); font-family:inherit; font-size:0.95rem;"></textarea>
     </div>
     <button type="submit" class="bouton bouton-primaire">Envoyer le message</button>
-    <p id="confirmation-contact" style="display:none; margin-top:16px; color:var(--vert); font-size:0.9rem; font-weight:500;">Merci, votre message a bien été enregistré (démonstration — aucun envoi réel n'est effectué).</p>
+    <p id="confirmation-contact" style="display:none; margin-top:16px; color:var(--vert); font-size:0.9rem; font-weight:500;">Merci, votre message a bien été enregistré.</p>
   </form>
 </div>
 

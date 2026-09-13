@@ -329,6 +329,45 @@
 
   /* ---------- Avis clients (v3) ---------- */
   afficherAvis("bloc-avis", produit.id);
+    /* ---------- Bouton Partager (v6 : Web Share API) ---------- */
+  (function () {
+    const zoneActions = document.querySelector("#zone-produit .produit-actions");
+    if (!zoneActions) return;
+
+    const boutonPartager = document.createElement("button");
+    boutonPartager.type = "button";
+    boutonPartager.className = "lien-partage";
+    boutonPartager.setAttribute("aria-label", "Partager ce produit");
+    boutonPartager.innerHTML = `
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle>
+        <path d="M8.6 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"></path>
+      </svg>
+      Partager`;
+
+    boutonPartager.addEventListener("click", async function () {
+      const donnees = {
+        title: produit.nom + " — NOVA",
+        text: produit.nom + " à " + formatPrix(produit.prix) + " — découvrez-le sur NOVA !",
+        url: location.href.split("#")[0]
+      };
+
+      if (navigator.share) {
+        try { await navigator.share(donnees); } catch (e) { /* partage annulé par l'utilisateur */ }
+      } else if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(donnees.url);
+          afficherToast("Lien copié dans le presse-papiers !", "succes");
+        } catch (e) {
+          afficherToast("Partage indisponible sur ce navigateur", "info");
+        }
+      } else {
+        afficherToast("Partage indisponible sur ce navigateur", "info");
+      }
+    });
+
+    zoneActions.insertAdjacentElement("afterend", boutonPartager);
+  })();
 </script>
 </body>
 </html>

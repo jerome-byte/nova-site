@@ -162,4 +162,12 @@
     initReveal();
     initMutationReveal();
   });
+  /* ---------- NOVA v6 : PWA — enregistrement du Service Worker ---------- */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function () {
+      /* Environnement sans Service Worker (file://, aperçu intégré…) : silencieux */
+    });
+  });
+}
 })();
