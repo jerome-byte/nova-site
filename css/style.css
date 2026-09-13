@@ -1258,3 +1258,98 @@ html.a-animations .galerie-principal:not(.img-prete)::after{
 .lien-partage svg{
   flex:none;
 }
+
+/* ============================================================
+   NOVA v6.1 — Bannière d'installation (PWA)
+   ============================================================ */
+.banniere-install{
+  position:fixed;
+  left:16px;
+  right:16px;
+  bottom:16px;
+  z-index:150;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px 14px;
+  background:var(--papier);
+  border:1px solid var(--ligne);
+  border-radius:16px;
+  box-shadow:0 18px 44px rgba(15,23,42,0.22);
+  animation:banniere-install-apparition 0.45s cubic-bezier(0.21,1.02,0.73,1);
+}
+@keyframes banniere-install-apparition{
+  from{ opacity:0; transform:translateY(18px); }
+  to{ opacity:1; transform:translateY(0); }
+}
+.banniere-install img{
+  width:46px;
+  height:46px;
+  border-radius:12px;
+  flex:none;
+}
+.banniere-install-texte{
+  flex:1;
+  min-width:0;
+}
+.banniere-install-texte strong{
+  display:block;
+  font-size:0.95rem;
+  color:var(--encre);
+  margin-bottom:2px;
+}
+.banniere-install-texte span{
+  display:block;
+  font-size:0.78rem;
+  line-height:1.45;
+  color:var(--encre-doux);
+}
+.bouton-install{
+  flex:none;
+  padding:10px 16px;
+  border:none;
+  border-radius:999px;
+  background:var(--degrade);
+  color:#FFFFFF;
+  font-family:inherit;
+  font-size:0.85rem;
+  font-weight:700;
+  cursor:pointer;
+  transition:transform 0.15s ease, box-shadow 0.2s ease;
+}
+.bouton-install:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(79,70,229,0.35);
+}
+.bouton-install:active{
+  transform:translateY(0);
+}
+.bouton-install-fermer{
+  flex:none;
+  align-self:flex-start;
+  width:28px;
+  height:28px;
+  border:none;
+  border-radius:50%;
+  background:var(--carte);
+  color:var(--encre-doux);
+  font-size:1.1rem;
+  line-height:1;
+  cursor:pointer;
+  transition:background 0.2s ease, color 0.2s ease;
+}
+.bouton-install-fermer:hover{
+  background:var(--ligne);
+  color:var(--encre);
+}
+@media (min-width:901px){
+  .banniere-install{
+    left:auto;
+    right:24px;
+    bottom:24px;
+    width:430px;
+  }
+}
+@media (prefers-reduced-motion: reduce){
+  .banniere-install{ animation:none; }
+}

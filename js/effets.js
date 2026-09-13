@@ -170,4 +170,95 @@ if ("serviceWorker" in navigator) {
     });
   });
 }
+/* ---------- NOVA v6.1 : bannière d'installation personnalisée ---------- */
+(function () {
+  var modeAppli = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches;
+  if (modeAppli) return;
+
+  var CLE_REFUS = "nova_installation_refusee";
+  var DUREE_REFUS = 7 * 24 * 60 * 60 * 1000; /* après fermeture : pause de 7 jours */
+  var evenementInstallation = null;
+
+  function estIOS() {
+    return /iphone|ipad|ipod/i.test(navigator.userAgent);
+  }
+
+  function refusRecent() {
+    try {
+      var horodatage = parseInt(localStorage.getItem(CLE_REFUS) || "0", 10);
+      return horodatage > 0 && (Date.now() - horodatage) < DUREE_REFUS;
+    } catch (e) { return false; }
+  }
+
+  function afficherBanniere() {
+    if (refusRecent() || document.getElementById("banniere-install")) return;
+
+    var banniere = document.createElement("div");
+    banniere.id = "banniere-install";
+    banniere.className = "banniere-install";
+    banniere.setAttribute("role", "dialog");
+    banniere.setAttribute("aria-label", "Installer l'application NOVA");
+
+    var surIOS = estIOS();
+    var message = surIOS
+      ? "Sur iPhone : appuyez sur Partager en bas de Safari, puis « Sur l'écran d'accueil »."
+      : "Accédez à NOVA en un tap, comme une vraie application.";
+
+    banniere.innerHTML =
+      '<img src="icons/icon-192.png" alt="" width="46" height="46">' +
+      '<div class="banniere-install-texte">' +
+        '<strong>Installer NOVA</strong>' +
+        '<span>' + message + '</span>' +
+      '</div>' +
+      (surIOS ? "" : '<button type="button" class="bouton-install">Installer</button>') +
+      '<button type="button" class="bouton-install-fermer" aria-label="Fermer">&times;</button>';
+
+    document.body.appendChild(banniere);
+
+    var boutonInstaller = banniere.querySelector(".bouton-install");
+    if (boutonInstaller) {
+      boutonInstaller.addEventListener("click", async function () {
+        banniere.remove();
+        if (evenementInstallation) {
+          evenementInstallation.prompt();
+          try {
+            var choix = await evenementInstallation.userChoice;
+            if (choix && choix.outcome === "accepted" && typeof afficherToast === "function") {
+              afficherToast("NOVA va être installée — merci !", "succes");
+            }
+          } catch (e) { /* dialogue fermé sans choix */ }
+          evenementInstallation = null;
+        }
+      });
+    }
+
+    banniere.querySelector(".bouton-install-fermer").addEventListener("click", function () {
+      banniere.remove();
+      try { localStorage.setItem(CLE_REFUS, String(Date.now())); } catch (e) {}
+    });
+  }
+
+  /* Android / Chrome : l'événement natif déclenche l'affichage */
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    evenementInstallation = e;
+    afficherBanniere();
+  });
+
+  /* Installation confirmée : bannière retirée + pause réinitialisée */
+  window.addEventListener("appinstalled", function () {
+    var banniere = document.getElementById("banniere-install");
+    if (banniere) banniere.remove();
+    try { localStorage.removeItem(CLE_REFUS); } catch (e) {}
+  });
+
+  /* iOS : aucun événement natif → instructions visibles dès l'ouverture */
+  if (estIOS()) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", afficherBanniere);
+    } else {
+      afficherBanniere();
+    }
+  }
+})();
 })();
