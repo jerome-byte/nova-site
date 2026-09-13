@@ -8,6 +8,13 @@ const CLE_FAVORIS = "nova_favoris";
 const CLE_VUS = "nova_vus_recemment";
 const SEUIL_STOCK_URGENCE = 5; /* en dessous de ce niveau : badge "Plus que X en stock !" */
 
+/* v4 : identifiants des 3 produits ajoutés le plus récemment (badge "Nouveau"
+   sur les cartes). Calculé une seule fois au chargement, à partir de dateAjout. */
+const IDS_NOUVEAUTES = PRODUITS.slice()
+  .sort(function (a, b) { return (b.dateAjout || "").localeCompare(a.dateAjout || ""); })
+  .slice(0, 3)
+  .map(function (p) { return p.id; });
+
 /* ---------- Utilitaires ---------- */
 
 function normaliserTexte(chaine) {
@@ -133,6 +140,8 @@ function carteProduitHTML(p) {
     '<article class="carte-produit">' +
       '<div class="carte-produit-visuel" style="background:' + p.couleurFond + '">' +
         '<a href="' + lien + '" class="carte-produit-lien" aria-label="' + p.nom + '">' + iconeSVG(p.icone, p.couleur, p.image) + "</a>" +
+        /* v4 : badge "Nouveau" sur les 3 derniers produits ajoutés */
+        (IDS_NOUVEAUTES.indexOf(p.id) !== -1 ? '<span class="badge-nouveau">Nouveau</span>' : "") +
         badgeStockHTML(p) +
         boutonFavoriHTML(p.id) +
       "</div>" +

@@ -41,6 +41,7 @@ site/
     ├── effets.js     → v3 : apparitions au scroll + squelettes de chargement d'images
     ├── avis.js       → v3 : avis clients (étoiles + commentaires, localStorage)
     ├── galerie.js    → v3 : galerie multi-images de la fiche produit
+    ├── promotions.js → v4 : bannière promo + compte à rebours, nouveautés, témoignages, newsletter
     └── menu.js       → Menu mobile (drawer) avec recherche, favoris et bouton thème
 ```
 
@@ -70,6 +71,13 @@ site/
 3. **Avis clients** — notes en étoiles + commentaires sur chaque fiche produit (`produit.html`) : note globale, répartition par étoile, formulaire avec sélection d'étoiles cliquables, publication instantanée en `localStorage` (clé `nova_avis`). Des avis de démonstration sont semés au premier chargement ; la note moyenne apparaît aussi sur les cartes du catalogue.
 4. **Mode sombre** — bouton lune/soleil dans la nav de toutes les pages et dans le drawer mobile. Le choix est mémorisé (`nova_theme`), la préférence système est respectée à la première visite, et le thème est appliqué avant le premier rendu (aucun flash blanc). Toute la palette s'inverse via les variables CSS.
 5. **Galerie multi-images** — sur la fiche produit, 4 vues générées à partir des données existantes (photo plein cadre, produit seul, détail zoomé, illustration vectorielle) avec miniatures cliquables, flèches et compteur. Pour de vraies photos multiples, ajoutez un champ `galerie: [url1, url2…]` dans `data.js`.
+
+## Fonctionnalités v4 (2026 — accueil)
+
+1. **Bannière promo avec compte à rebours** — en haut de l'accueil : "−20% jusqu'à vendredi !" avec code `NOVA20` et décompte en temps réel (jours / heures / min / sec) jusqu'au vendredi 23h59m59s (ce soir si nous sommes vendredi). Calculé à l'ouverture, aucune donnée stockée. Blocs `js/promotions.js` + `.banniere-promo` dans `style.css`.
+2. **Section "Nouveautés"** — sous le bandeau de confiance : les 3 produits dont `dateAjout` est le plus récent (actuellement Ecran moniteur, Casque, Baskets Noire). Un badge dégradé **"Nouveau"** est posé sur ces 3 cartes partout où elles apparaissent (accueil, catalogue, favoris, produits associés) — la liste `IDS_NOUVEAUTES` est recalculée automatiquement dans `boutique.js` quand vous mettez à jour `dateAjout` dans `data.js`.
+3. **Témoignages clients** — section "Ils nous font confiance" : les 3 meilleurs avis (note ≥ 4, commentaire consistant) tirés de `nova_avis`, avec étoiles, citation, initiales du client et lien vers le produit concerné. Sélection déterministe (note puis date décroissantes) ; la section se masque d'elle-même s'il n'existe aucun avis éligible.
+4. **Newsletter** — bloc dégradé en bas de l'accueil : saisie d'e-mail avec validation, anti-doublon et confirmation visuelle. L'inscription est mémorisée dans `localStorage` (clé `nova_newsletter`) pour la démonstration — rien n'est envoyé en ligne ; branchez ici votre outil d'newsletter (Mailchimp, Brevo…) pour un usage réel.
 
 ## Catalogue produits
 

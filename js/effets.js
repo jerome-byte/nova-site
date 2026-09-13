@@ -29,7 +29,9 @@
     ".produit-info",
     ".panier-vide",
     ".avis-entete",
-    ".avis-carte"
+    ".avis-carte",
+    ".temoignage-carte",
+    ".newsletter-bloc"
   ].join(",");
 
   let observateurReveal = null;
