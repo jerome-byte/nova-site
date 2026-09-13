@@ -10,7 +10,7 @@ const SEUIL_STOCK_URGENCE = 5; /* en dessous de ce niveau : badge "Plus que X en
 
 /* v4 : identifiants des 3 produits ajoutés le plus récemment (badge "Nouveau"
    sur les cartes). Calculé une seule fois au chargement, à partir de dateAjout. */
-const IDS_NOUVEAUTES = PRODUITS.slice()
+const IDS_NOUVEAUTES = (typeof PRODUITS !== 'undefined' ? PRODUITS : []).slice()
   .sort(function (a, b) { return (b.dateAjout || "").localeCompare(a.dateAjout || ""); })
   .slice(0, 3)
   .map(function (p) { return p.id; });
