@@ -77,19 +77,38 @@
 
   <h2>Formulaire de contact</h2>
   <form action="https://formsubmit.co/akotayaojerome@gmail.com" method="POST" class="formulaire-contact" id="form-contact">
-    <div class="champ"><label for="c-nom">Nom complet</label><input type="text" id="c-nom" name="name" required></div>
-    <div class="champ"><label for="c-email">E-mail</label><input type="email" id="c-email" name="email" required></div>
-    <div class="champ"><label for="c-sujet">Sujet</label>
-      <select id="c-sujet" name="subject">
-        <option>Question sur un produit</option>
-        <option>Suivi de commande</option>
-        <option>Retour / échange</option>
-        <option>Autre</option>
-      </select>
+    
+    <!-- Réponse automatique -->
+    <input type="hidden" name="_autoresponse" value="Nous avons bien reçu votre message et nous vous répondrons dans les plus brefs délais. Merci de nous avoir contactés !">
+    
+    <!-- Redirection après envoi (optionnel, vous pouvez créer une page merci.html ou laisser vide) -->
+    <!-- <input type="hidden" name="_next" value="https://votre-site.netlify.app/merci.html"> -->
+
+    <div class="champ">
+        <label for="c-nom">Nom complet</label>
+        <input type="text" id="c-nom" name="nom" placeholder="Votre nom" required>
     </div>
-    <div class="champ"><label for="c-message">Message</label>
-      <textarea id="c-message" name="message" required rows="5" style="width:100%; padding:12px 14px; border:1px solid var(--ligne); border-radius:var(--radius); font-family:inherit; font-size:0.95rem;"></textarea>
+
+    <div class="champ">
+        <label for="c-email">E-mail</label>
+        <input type="email" id="c-email" name="email" placeholder="Votre email" required>
     </div>
+
+    <div class="champ">
+        <label for="c-sujet">Sujet</label>
+        <select id="c-sujet" name="sujet">
+            <option>Question sur un produit</option>
+            <option>Suivi de commande</option>
+            <option>Retour / échange</option>
+            <option>Autre</option>
+        </select>
+    </div>
+
+    <div class="champ">
+        <label for="c-message">Message</label>
+        <textarea id="c-message" name="message" rows="5" placeholder="Votre message..." required style="width:100%; padding:12px 14px; border:1px solid var(--ligne); border-radius:var(--radius); font-family:inherit; font-size:0.95rem;"></textarea>
+    </div>
+
     <button type="submit" class="bouton bouton-primaire">Envoyer le message</button>
     <p id="confirmation-contact" style="display:none; margin-top:16px; color:var(--vert); font-size:0.9rem; font-weight:500;">Merci, votre message a bien été enregistré.</p>
 </form>
